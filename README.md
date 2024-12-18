@@ -4,7 +4,7 @@
     Description: Documentation du projet
     Version: 1.0
     Created: 18/12/2024
-    Author: user
+    Author: Valentin Pizzio
     Organization: 
 -->
 

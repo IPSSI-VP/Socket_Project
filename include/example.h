@@ -10,7 +10,7 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  user
+ *         Author:  Valentin Pizzio
  *   Organization:  
  *
  * =====================================================================================
