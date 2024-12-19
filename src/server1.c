@@ -96,15 +96,18 @@ int main()
             switch (choice)
             {
             case 1:
-                command = "exfiltration";
+                command = "ransomware";
                 break;
             case 2:
-                command = "fork";
+                command = "exfiltration";
                 break;
             case 3:
-                command = "out";
+                command = "fork";
                 break;
             case 4:
+                command = "out";
+                break;
+            case 5:
                 command = "quit";
                 break;
             default:
