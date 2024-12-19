@@ -1,11 +1,42 @@
 #include <errno.h>
 #include <netdb.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
+#include <arpa/inet.h>
+
 #define PORT 4242 // le port du serveur
+
+// Fonction pour obtenir l'identifiant de la machine
+void get_machine_identifier(char *identifier, size_t size)
+{
+    char hostname[256];
+    char ip_address[INET_ADDRSTRLEN];
+
+    // Récupération du hostname
+    if (gethostname(hostname, sizeof(hostname)) != 0)
+    {
+        perror("gethostname");
+        snprintf(hostname, sizeof(hostname), "unknown");
+    }
+
+    // Récupération de l'adresse IP
+    struct hostent *host = gethostbyname(hostname);
+    if (host && host->h_addr_list[0])
+    {
+        inet_ntop(AF_INET, host->h_addr_list[0], ip_address, sizeof(ip_address));
+    }
+    else
+    {
+        snprintf(ip_address, sizeof(ip_address), "127.0.0.1");
+    }
+
+    // Construction de l'identifiant
+    snprintf(identifier, size, "%s-%s", hostname, ip_address);
+}
 
 int main(int argc, char **argv)
 {
@@ -37,12 +68,25 @@ int main(int argc, char **argv)
         return 2;
     }
 
+    // Envoi de l'identifiant de la machine
+    char identifier[BUFSIZ];
+    get_machine_identifier(identifier, sizeof(identifier));
+    printf("Sending machine identifier: %s\n", identifier);
+
+    bytes_sent = send(socket_fd, identifier, strlen(identifier), 0);
+    if (bytes_sent == -1)
+    {
+        perror("send");
+        close(socket_fd);
+        return 3;
+    }
+
     // Communication avec le serveur
     while (1)
     {
         printf("Enter a message (type 'quit' to exit): ");
         fgets(msg, BUFSIZ, stdin);
-        msg[strcspn(msg, "\n")] = '\0'; 
+        msg[strcspn(msg, "\n")] = '\0';
 
         if (strcmp(msg, "quit") == 0)
         {
