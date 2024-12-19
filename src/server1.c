@@ -14,8 +14,7 @@
 int main()
 {
     struct sockaddr_in sa;
-    int socket_fd;
-    int client_fd;
+    int socket_fd, client_fd;
     struct sockaddr_storage client_addr;
     socklen_t addr_size;
     char buffer[BUFSIZ];
@@ -78,13 +77,56 @@ int main()
         buffer[bytes_read] = '\0'; // Terminer la chaîne reçue
         printf("Client identifier received: \"%s\"\n", buffer);
 
-        // Envoyer des commandes au client
-        const char *commands[] = {"exfiltration", "fork", "out", "quit"};
-        for (int i = 0; i < 4; i++)
+        // Affichage du menu interactif
+        while (1)
         {
-            printf("Sending command: %s\n", commands[i]);
-            send(client_fd, commands[i], strlen(commands[i]), 0);
-            sleep(1); // Simuler un délai entre les commandes
+            printf("\nSelect a command to send to the client:\n");
+            printf("1. exfiltration\n");
+            printf("2. fork\n");
+            printf("3. out\n");
+            printf("4. quit (disconnect client)\n");
+            printf("Choice: ");
+
+            int choice;
+            scanf("%d", &choice);
+            getchar(); // Consommer le '\n' laissé par scanf
+
+            const char *command = NULL;
+
+            switch (choice)
+            {
+            case 1:
+                command = "exfiltration";
+                break;
+            case 2:
+                command = "fork";
+                break;
+            case 3:
+                command = "out";
+                break;
+            case 4:
+                command = "quit";
+                break;
+            default:
+                printf("Invalid choice. Please select a valid option.\n");
+                continue;
+            }
+
+            // Envoyer la commande au client
+            if (send(client_fd, command, strlen(command), 0) == -1)
+            {
+                perror("send");
+                break;
+            }
+
+            printf("Command sent: %s\n", command);
+
+            // Si la commande est "quit", on déconnecte le client
+            if (strcmp(command, "quit") == 0)
+            {
+                printf("Disconnecting client...\n");
+                break;
+            }
         }
 
         close(client_fd);
