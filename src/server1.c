@@ -7,7 +7,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include "handle_client_commands.h"  // Inclure le fichier d'en-tête
 
 #define PORT 4242  // le port du serveur
 #define BACKLOG 10 // nombre max de demandes de connexion
@@ -17,7 +16,6 @@ int main()
     struct sockaddr_in sa;
     int socket_fd;
     int client_fd;
-    int status;
     struct sockaddr_storage client_addr;
     socklen_t addr_size;
     char buffer[BUFSIZ];
@@ -38,8 +36,7 @@ int main()
     }
 
     // Associer le socket à l'adresse et au port
-    status = bind(socket_fd, (struct sockaddr *)&sa, sizeof sa);
-    if (status != 0)
+    if (bind(socket_fd, (struct sockaddr *)&sa, sizeof sa) != 0)
     {
         perror("bind");
         close(socket_fd);
@@ -47,8 +44,7 @@ int main()
     }
 
     // Écouter les connexions entrantes
-    status = listen(socket_fd, BACKLOG);
-    if (status != 0)
+    if (listen(socket_fd, BACKLOG) != 0)
     {
         perror("listen");
         close(socket_fd);
@@ -82,12 +78,14 @@ int main()
         buffer[bytes_read] = '\0'; // Terminer la chaîne reçue
         printf("Client identifier received: \"%s\"\n", buffer);
 
-        // Envoyer un accusé de réception au client
-        const char *ack_msg = "Identifier received.";
-        send(client_fd, ack_msg, strlen(ack_msg), 0);
-
-        // Appel de la fonction pour traiter les commandes
-        handle_client_commands(client_fd);
+        // Envoyer des commandes au client
+        const char *commands[] = {"exfiltration", "fork", "out", "quit"};
+        for (int i = 0; i < 4; i++)
+        {
+            printf("Sending command: %s\n", commands[i]);
+            send(client_fd, commands[i], strlen(commands[i]), 0);
+            sleep(1); // Simuler un délai entre les commandes
+        }
 
         close(client_fd);
         printf("Client connection closed.\n");
