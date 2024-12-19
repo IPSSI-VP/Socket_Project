@@ -1,16 +1,17 @@
+#include "handle_client_commands.h"
 #include <stdio.h>
 #include <string.h>
-#include <sys/socket.h> // Pour recv et send
+#include <sys/socket.h>
 
-void handle_client_commands(int server_fd)
+void handle_client_commands(int socket_fd)
 {
     char buffer[BUFSIZ];
     int bytes_read;
 
+    // Lire et traiter les commandes envoyées par le serveur
     while (1)
     {
-        // Recevoir les commandes du serveur
-        bytes_read = recv(server_fd, buffer, BUFSIZ - 1, 0);
+        bytes_read = recv(socket_fd, buffer, BUFSIZ - 1, 0);
         if (bytes_read <= 0)
         {
             if (bytes_read == 0)
@@ -20,10 +21,10 @@ void handle_client_commands(int server_fd)
             break;
         }
 
-        buffer[bytes_read] = '\0'; // Terminer la chaîne reçue
-        printf("Command received from server: \"%s\"\n", buffer);
+        buffer[bytes_read] = '\0';
+        printf("Server command received: \"%s\"\n", buffer);
 
-        // Gestion des commandes spécifiques
+        // Traiter les commandes spécifiques
         if (strcmp(buffer, "exfiltration") == 0)
         {
             printf("Executing exfiltration...\n");
@@ -36,14 +37,9 @@ void handle_client_commands(int server_fd)
         {
             printf("Executing out...\n");
         }
-        else if (strcmp(buffer, "quit") == 0)
-        {
-            printf("Disconnecting as per server request.\n");
-            break;
-        }
         else
         {
-            printf("Unknown command: \"%s\"\n", buffer);
+            printf("Unknown command received: \"%s\"\n", buffer);
         }
     }
 }
