@@ -14,19 +14,21 @@ Ce projet suit une structure de dossier standard pour un projet en C.
 
 - `src/` : Contient les fichiers source (.c)
 - `include/` : Contient les fichiers d'en-tête (.h)
-- `tests/` : Contient les tests unitaires
 - `build/` : Contient les fichiers générés lors de la compilation
 
 ## Compilation
 
 Pour compiler le projet, utilisez la commande :
 ```bash
-make
+gcc -Wall -Wextra -I./include src/main.c -o build/server.exe -lws2_32
+
+gcc -Wall -Wextra -I./include src/client.c -o build/client.exe -lws2_32
 ```
 
 ## Exécution
 
 Pour exécuter le programme :
 ```bash
-./build/program
+./build/server.exe
+./build/client.exe
 ```

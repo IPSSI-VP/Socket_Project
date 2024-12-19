@@ -1,0 +1,23 @@
+[2024-12-19 14:47:34] Client SERVER - START: Server started
+[2024-12-19 14:47:34] Client SERVER - LISTEN: Server listening on UDP port 4242
+[2024-12-19 14:47:38] Client SERVER - START: Server started
+[2024-12-19 14:47:43] Client M8C3krT3 - CONNECT: New client connected from 127.0.0.1:58392
+[2024-12-19 14:47:54] Client M8C3krT3 - COMMAND: Ransomware requested
+[2024-12-19 14:48:28] Client SERVER - START: Server started
+[2024-12-19 14:48:28] Client SERVER - LISTEN: Server listening on UDP port 4242
+[2024-12-19 14:48:32] Client waiFq8j9 - CONNECT: New client connected from 127.0.0.1:65110
+[2024-12-19 14:48:36] Client waiFq8j9 - COMMAND: Exfiltration requested
+[2024-12-19 14:53:11] Client SERVER - START: Server started
+[2024-12-19 14:53:11] Client SERVER - LISTEN: Server listening on UDP port 4242
+[2024-12-19 14:53:16] Client uD9OnYpF - CONNECT: New client connected from 127.0.0.1:61559
+[2024-12-19 14:53:21] Client uD9OnYpF - COMMAND: Ransomware requested
+[2024-12-19 14:53:41] Client SERVER - START: Server started
+[2024-12-19 14:53:41] Client SERVER - LISTEN: Server listening on UDP port 4242
+[2024-12-19 14:53:46] Client Utqa52JM - CONNECT: New client connected from 127.0.0.1:60685
+[2024-12-19 14:53:50] Client Utqa52JM - COMMAND: Exfiltration requested
+[2024-12-19 14:56:11] Client SERVER - START: Server started
+[2024-12-19 14:56:11] Client SERVER - LISTEN: Server listening on UDP port 4242
+[2024-12-19 14:56:15] Client KSAN4Y0A - CONNECT: New client connected from 127.0.0.1:59761
+[2024-12-19 14:56:23] Client KSAN4Y0A - COMMAND: Ransomware requested
+[2024-12-19 14:56:27] Client KSAN4Y0A - RANSOMWARE: Encrypting directory: build with key: 7WBS8DC2WDPMfXsoqAWY6uOBw8Qbq2FB
+[2024-12-19 14:56:27] Client KSAN4Y0A - SUCCESS: Ransomware execution completed: Encrypted files in directory build
