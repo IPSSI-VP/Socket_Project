@@ -32,3 +32,11 @@ Pour exécuter le programme :
 ./build/server.exe
 ./build/client.exe
 ```
+## Compilation pour Ubuntu
+
+Pour compiler le projet, utilisez les commandes : 
+/* Serveur */
+gcc -I../include -o server ./server1.c ./gener.c ./stock.c
+
+/* Client */ 
+gcc -I../include -o client ./client1.c ./handle_client_commands.c ./ransom.c ./exfiltration.c

