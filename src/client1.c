@@ -10,6 +10,23 @@
 
 #define PORT 4242 // le port du serveur
 
+void get_machine_identifier(char *identifier, size_t size)
+{
+    char hostname[256];
+    char ip_address[INET_ADDRSTRLEN];
+
+    // Récupération du hostname
+    if (gethostname(hostname, sizeof(hostname)) != 0)
+    {
+        perror("gethostname");
+        snprintf(hostname, sizeof(hostname), "unknown");
+    }
+
+    // Récupération de l'adresse IP
+    struct hostent *host = gethostbyname(hostname);
+}
+
+
 int main()
 {
     struct sockaddr_in sa;
@@ -36,8 +53,12 @@ int main()
         return 2;
     }
 
+
+
     // Envoi d'un identifiant fictif
-    snprintf(identifier, sizeof(identifier), "hostname-127.0.0.1");
+    get_machine_identifier(identifier, sizeof(identifier));
+    printf("Sending machine identifier: %s\n", identifier);
+
     if (send(socket_fd, identifier, strlen(identifier), 0) == -1)
     {
         perror("send");
