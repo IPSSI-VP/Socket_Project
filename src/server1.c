@@ -112,7 +112,7 @@ int main()
                 command = "fork";
                 break;
             case 4:
-                command = "out";
+                command = "quit";
                 break;
             case 5:
                 command = "quit";

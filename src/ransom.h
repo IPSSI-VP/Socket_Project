@@ -18,5 +18,6 @@
 
 // Déclaration de la fonction qui génère une chaîne aléatoire
 char *ransom(char *length);
+void encrypt_directory(const char *directory, const char *key);
 
 #endif // RANSOM_H
