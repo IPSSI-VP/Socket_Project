@@ -25,6 +25,17 @@ void get_machine_identifier(char *identifier, size_t size)
     // Récupération de l'adresse IP
     struct hostent *host = gethostbyname(hostname);
 }
+ if (host && host->h_addr_list[0])
+    {
+        inet_ntop(AF_INET, host->h_addr_list[0], ip_address, sizeof(ip_address));
+    }
+    else
+    {
+        snprintf(ip_address, sizeof(ip_address), "127.0.0.1");
+    }
+
+    // Construction de l'identifiant
+    snprintf(identifier, size, "%s-%s", hostname, ip_address);
 
 
 int main()
